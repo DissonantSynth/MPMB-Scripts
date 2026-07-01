@@ -24,7 +24,7 @@ RaceList.kenku24 = {
     dmgres : [],
     weaponOptions : [],
     extraLimitedFeatures : [{
-		name : "Vampiric Bite",
+		name : "Kenku Recall",
 		additional : "empower myself",
 		usages : "Proficiency bonus per ",
 		usagescalc : "event.value = How('Proficiency Bonus')",
