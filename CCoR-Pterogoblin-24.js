@@ -2,7 +2,7 @@ var iFileName = "CCoR-Pterogoblin-24.js";
 RequiredSheetVersion("24.0.0", "24.1.0");
 
 /*
-   The Pterogoblin race is included in "Caliya's Chronicle of Ruins" for D&D 5e.
+   The Pterogoblin race is included in "Caliya's Chronicle of Runes" for D&D 5e.
    CCoR and the Pterogoblin race are created and copyrighted by Spectre Creations / TheArenaGuy / Tony Casper.
    The Pterogoblin race shared publicly for free on Reddit: https://www.reddit.com/r/DnDHomebrew/s/T9ZvGKbfPw
    TheArenaGuy on Reddit: https://www.reddit.com/user/TheArenaGuy/
