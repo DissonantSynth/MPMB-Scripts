@@ -2,7 +2,6 @@ var iFileName = "FGtFD-FloralDragonborn-24.js";
 RequiredSheetVersion("24.0.0", "24.1.0");
 
 /*
-   NB: UNFINISHED
    The Floral Dragonborn race is included in "The Field Guide to Floral Dragons: Floral Dragonborns" for D&D 5e.
    FGtFD and the Floral Dragonborn race are created and copyrighted by Hit Point Press Inc and Verity Lane.
    Website: https://floraldragons.com/
@@ -18,57 +17,55 @@ SourceList["FGtFD"] = {
 
 // Floral Dragonborn Race
 RaceList["Floral Dragonborn"] = {
-	regExpSearch : /(?:floral(?: dragonborn)?|dragonborn)/i,
-	name : "Floral Dragonborn",
-	sortname : "Floral Dragonborn",
-	source : [["FGtFD", 0]],
-	plural : "Floral Dragonborns",
-	size : [[3, 4]], // Medium and Small
-	speed : {
-		walk : { spd : 30, enc : 20 }
-	},
-	vision : ["Tremorsense", 60],
-	languageProfs : ["Common", "Draconic"],
-	trait : "**Floral Dragonborn**"+
-		"\n \u2022 ##Floral Legacy##. Use 'Racial Options' above to choose a Floral Legacy, affecting my Skill Proficiency, FLoral Breath Weapon, and Floral Fortitude."+
-		"\n \u2022 ##Draconic Blossoming##. Starting at 5th level, I can use a bonus action to regain 1d4 hit points at the start of each of my turns for one minute. For the duration, any creature that attacks me must first succeed a Cha saving throw (DC = 8 + Cha mod + PB) or be forced to choose a different target. Use once per long rest."+
-		"\n \u2022 ##Floral Breath Weapon##. As an attack action, I can exhale a 15-foot cone of magical petals. Con saving throw (DC = 8 + Cha mod + PB), take 2d6 poison dmg on a failure, or half as much dmg on a success. Dmg increases: 3d6 at 6th level, 4d6 at 11th level, and 5d6 at 16th level. Use equal to PB per long rest."+,
-		"\n \u2022 ##Floral Fortitude##. I have advantage on saving throws against a condition determined by my Floral Legacy.",
-	weaponOptions: [{
-        regExpSearch: /^(?=.*(?:floral|breath|weapon)).*$/i,
-        name: "Floral Breath Weapon",
-        source: ["FGtFD", 0],
-        ability: X,
-        type: "X",
-        damage: [0, 0, ["magical","slashing"]],
-        range: "15-ft cone",
-        description: "X",
-        abilitytodamage: false,
-        dc: true,
-        dbBreathWeapon: true,
-        selectNow: true,
-        isAlwaysProf: true,
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn).*$/i,
+    name : "Floral Dragonborn",
+    sortname : "Floral Dragonborn",
+    source : [["FGtFD", 0]],
+    plural : "Floral Dragonborns",
+    size : [3, 4], // Medium and Small
+    speed : {
+        walk : { spd : 30, enc : 20 }
+    },
+    vision : [["Tremorsense", 60]],
+    languageProfs : ["Common", "Draconic", ["Any one language", 1]],
+    trait : "##Floral Dragonborn## (Creature type Humanoid)" +
+        "\n \u2022 ##Floral Legacy##. Choose a Floral Legacy from the racial options above. Your choice grants a skill proficiency and affects your Floral Breath Weapon and Floral Fortitude traits." +
+        "\n \u2022 ##Draconic Blossoming##. Starting at 5th level, I can use a Bonus Action to regain 1d4 Hit Points at the start of each of my turns for 1 minute. During that time, any creature that attacks me must first succeed on a Charisma saving throw (DC 8 + Charisma modifier + Proficiency Bonus) or choose a different target. I can use this once per Long Rest." +
+        "\n \u2022 ##Floral Breath Weapon##. As an Action, I can exhale a 15-foot cone of magical petals. Each creature in the area makes a Constitution saving throw (DC 8 + Charisma modifier + Proficiency Bonus). On a failed save, the creature takes 1d8 magical slashing damage and triggers the breath weapon effect of its Floral Legacy. On a successful save, the creature takes half as much damage and the effect is not triggered. The damage increases by 1d8 when I reach 5th level (2d8), 11th level (3d8), and 17th level (4d8). I can use this a number of times equal to my Proficiency Bonus per Long Rest." +
+        "\n \u2022 ##Floral Fortitude##. I have advantage on saving throws against a condition determined by my Floral Legacy.",
+    weaponOptions : [{
+        regExpSearch : /^(?=.*(?:floral|breath|weapon)).*$/i,
+        name : "Floral Breath Weapon",
+        source : [["FGtFD", 0]],
+        ability : 3,
+        type : "Special",
+        damage : [1, 8, "slashing"],
+        range : "15-ft cone",
+        description : "Hits all in area; Con save, success - half damage; magical slashing; usable Proficiency Bonus times per long rest; failed save triggers legacy effect",
+        abilitytodamage : false,
+        dc : true,
+        dbBreathWeapon : true,
+        selectNow : true,
+        isAlwaysProf : true,
     }],
-	features : {
-		"Floral Legacy" : {
-            name: "Floral Legacy",
-            limfeaname: "Breath Weapon",
-            minlevel: 1,
-            usages: "Proficiency bonus per ",
-            usagescalc: "event.value = How('Proficiency Bonus');",
-            additional: levels.map(function(n) {
+    features : {
+        "floral legacy" : {
+            name : "Floral Legacy",
+            limfeaname : "Breath Weapon",
+            minlevel : 1,
+            usages : "Proficiency bonus per ",
+            usagescalc : "event.value = How('Proficiency Bonus');",
+            additional : levels.map(function(n) {
                 return (n < 5 ? 1 : n < 11 ? 2 : n < 17 ? 3 : 4) + 'd8';
             }),
-            recovery: "long rest",
-            action: [
-                ["action"]
-            ],
-            calcChanges: {
-                atkAdd: [
+            recovery : "long rest",
+            action : [["action"]],
+            calcChanges : {
+                atkAdd : [
                     function(fields, v) {
                         if (v.theWea.dbBreathWeapon && CurrentRace.known === 'Floral Dragonborn') {
                             fields.Damage_Die = (CurrentRace.level < 5 ? 1 : CurrentRace.level < 11 ? 2 : CurrentRace.level < 17 ? 3 : 4) + 'd8';
-                            if (CurrentRace.variant) {
+                            if (CurrentRace.variant && CurrentRace.dmgres) {
                                 fields.Damage_Type = CurrentRace.dmgres[0];
                             }
                         }
@@ -78,60 +75,90 @@ RaceList["Floral Dragonborn"] = {
                 ]
             }
         },
-		"Draconic Blossoming" : {
-			name : "Draconic Blossoming",
-			minlevel : 5,
-			usages: 1,
-			recovery : "long rest",
-			action : [["bonus action", ""]]
-		},
-	},
-	variants: ["beauty", "guardian", "healer", "poisoner", "waterplant", "wildflower"],
-	age : "",
-	height : "",
-	weight : "",
-	heightMetric : "",
-	weightMetric : "",
+        "draconic blossoming" : {
+            name : "Draconic Blossoming",
+            minlevel : 5,
+            usages : 1,
+            recovery : "long rest",
+            action : [["bonus action"]],
+            description : desc([
+                "Starting at 5th level, I can use a Bonus Action to regain 1d4 Hit Points at the start of each of my turns for 1 minute.",
+                "During that time, any creature that attacks me must first succeed on a Charisma saving throw (DC 8 + Charisma modifier + Proficiency Bonus) or choose a different target.",
+                "I can use this once per Long Rest."
+            ])
+        }
+    },
+    variants : ["beauty", "guardian", "healer", "poisoner", "waterplant", "wildflower"],
+    replaces: ["beauty floral dragonborn", "guardian  floral dragonborn", "healer floral dragonborn", "poisoner floral dragonborn", "waterplant floral dragonborn", "wildflower floral dragonborn"],
+    age : " reach adulthood in their middle teens and live around 80 years",
+    height : " are about 4 to 7 feet tall",
+    weight : " weigh around 160 to 320 pounds",
+    heightMetric : " are about 1,2 to 2,1 metres tall",
+    weightMetric : " weigh around 70 to 150 kilograms",  
 };
 
 RaceSubList["floral-dragonborn-beauty"] = {
-    regExpSearch: /beauty/i,
-    name: "Floral Dragonborn (Beauty)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*beauty).*$/i,
+    name : "Beauty Floral Dragonborn",
+    sortname : "Floral Dragonborn, Beauty",
+    trait : "Floral Dragonborn (Beauty)\n\u2022 ##Beauty Legacy##. I gain proficiency in Persuasion and advantage on saving throws against the Magical Sleep condition. Each creature that fails my Floral Breath Weapon saving throw is charmed by me until the end of its next turn.",
+    skills : ["Persuasion"],
+    savetxt : {
+        adv_vs : ["magical sleep"]
+    },
 };
 
 RaceSubList["floral-dragonborn-guardian"] = {
-    regExpSearch: /guardian/i,
-    name: "Floral Dragonborn (Guardian)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*guardian).*$/i,
+    name : "Guardian Floral Dragonborn",
+    sortname : "Floral Dragonborn, Guardian",
+    trait : "Floral Dragonborn (Guardian)\n\u2022 ##Guardian Legacy##. I gain proficiency in Perception and advantage on saving throws against the Frightened condition. Each creature that fails my Floral Breath Weapon saving throw has disadvantage on attacks against creatures other than me until the end of its next turn.",
+    skills : ["Perception"],
+    savetxt : {
+        adv_vs : ["frightened"]
+    }
 };
 
 RaceSubList["floral-dragonborn-healer"] = {
-    regExpSearch: /healer/i,
-    name: "Floral Dragonborn (Healer)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*healer).*$/i,
+    name : "Healer Floral Dragonborn",
+    sortname : "Floral Dragonborn, Healer",
+    trait : "Floral Dragonborn (Healer)\n\u2022 ##Healer Legacy##. I gain proficiency in Medicine and advantage on saving throws against the Exhaustion condition. One creature of my choice within 15 feet of me regains Hit Points equal to half the total amount of damage my Floral Breath Weapon dealt to creatures that failed their saving throws.",
+    skills : ["Medicine"],
+    savetxt : {
+        adv_vs : ["exhaustion"]
+    }
 };
 
 RaceSubList["floral-dragonborn-poisoner"] = {
-    regExpSearch: /poisoner/i,
-    name: "Floral Dragonborn (Poisoner)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*poisoner).*$/i,
+    name : "Poisoner Floral Dragonborn",
+    sortname : "Floral Dragonborn, Poisoner",
+    trait : "Floral Dragonborn (Poisoner)\n\u2022 ##Poisoner Legacy##. I gain proficiency in Intimidation and advantage on saving throws against the Poisoned condition. Each creature that fails my Floral Breath Weapon saving throw becomes poisoned until the end of its next turn.",
+    skills : ["Intimidation"],
+    savetxt : {
+        adv_vs : ["poisoned"]
+    }
 };
 
 RaceSubList["floral-dragonborn-waterplant"] = {
-    regExpSearch: /waterplant/i,
-    name: "Floral Dragonborn (Waterplant)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*waterplant).*$/i,
+    name : "Waterplant Floral Dragonborn",
+    sortname : "Floral Dragonborn, Waterplant",
+    trait : "Floral Dragonborn (Waterplant)\n\u2022 ##Waterplant Legacy##. I gain proficiency in Athletics and advantage on saving throws against the Restrained condition. Each creature that fails my Floral Breath Weapon saving throw is knocked prone.",
+    skills : ["Athletics"],
+    savetxt : {
+        adv_vs : ["restrained"]
+    }
 };
 
 RaceSubList["floral-dragonborn-wildflower"] = {
-    regExpSearch: /wildflower/i,
-    name: "Floral Dragonborn (Wildflower)",
-    trait: "X",
-    immune : ["X"],
+    regExpSearch : /^(?=.*floral)(?=.*dragonborn)(?=.*wildflower).*$/i,
+    name : "Wildflower Floral Dragonborn",
+    sortname : "Floral Dragonborn, Wildflower",
+    trait : "Floral Dragonborn (Wildflower)\n\u2022 ##Wildflower Legacy##. I gain proficiency in Acrobatics and advantage on saving throws against the Charmed condition. I can move without provoking opportunity attacks until the end of my next turn. At least one creature must fail its saving throw for this effect to trigger.",
+    skills : ["Acrobatics"],
+    savetxt : {
+        adv_vs : ["charmed"]
+    }
 };
